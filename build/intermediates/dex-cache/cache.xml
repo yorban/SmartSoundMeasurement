@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pre-dex-items>
+
+    <item
+        dex="C:\Users\Mathias\Development\android-spl-meter-9db2906532c2\app\build\intermediates\pre-dexed\debug\opencsv-3.1-ed6b13155306d14b797e4ccba4503ee4f8f3c876.jar"
+        jar="C:\Users\Mathias\Development\android-spl-meter-9db2906532c2\app\lib\opencsv-3.1.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="100f1f66bcade989c73eabd3d56ac39df47317df"/>
+
+</pre-dex-items>
