@@ -29,7 +29,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.csau.smartsound.splmeasurement.R;
 import com.opencsv.CSVWriter;
 
 import java.io.File;
@@ -43,8 +42,6 @@ import java.text.DecimalFormat;
  * This class owns a micInput object that encapsulates the audio input
  * stream. The micInput object calls the processAudioFrame method which
  * computes the RMS value etc. and the display is updated.
- *
- * @author Trausti Kristjansson
  */
 public class SmartSoundMeasurement extends Activity implements
         MicrophoneInputListener {
@@ -283,22 +280,23 @@ public class SmartSoundMeasurement extends Activity implements
             mDrawing = true;
             // Compute the RMS value. (Note that this does not remove DC).
             double rms = 0;
-            for (int i = 0; i < audioFrame.length; i++) {
-                rms += audioFrame[i] * audioFrame[i];
+            for (short anAudioFrame : audioFrame) {
+                rms += anAudioFrame * anAudioFrame;
             }
             rms = Math.sqrt(rms / audioFrame.length);
 
             // Compute a smoothed version for less flickering of the display.
             mRmsSmoothed = mRmsSmoothed * mAlpha + (1 - mAlpha) * rms;
             final double rmsdB = 20.0 * Math.log10(mGain * mRmsSmoothed);
-            Log.v(TAG, Double.toString(20 + rmsdB));
+            final double rmsdBActual = 20.0 * Math.log10(mGain*rms);
+            Log.v(TAG, Double.toString(20 + rmsdBActual));
             final ToggleButton loggingBtn = (ToggleButton) findViewById(R.id.loggingToggleButton);
             if (loggingBtn.isChecked() && writer != null) {
                 status = labelText.getText().toString();
                 if(status.equals("")) {
                     status = "defaultStatus";
                 }
-                String[] entries = (20 + rmsdB + "#" + status).split("#"); // array of your values
+                String[] entries = (20 + rmsdBActual + "#" + status).split("#"); // array of your values
                 writer.writeNext(entries);
             }
             // Set up a method that runs on the UI thread to update of the LED bar
@@ -313,7 +311,6 @@ public class SmartSoundMeasurement extends Activity implements
                     DecimalFormat df = new DecimalFormat("##");
                     mdBTextView.setText(df.format(20 + rmsdB));
 
-                    DecimalFormat df_fraction = new DecimalFormat("#");
                     int one_decimal = (int) (Math.round(Math.abs(rmsdB * 10))) % 10;
                     mdBFractionTextView.setText(Integer.toString(one_decimal));
                     mDrawing = false;
